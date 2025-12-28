@@ -162,8 +162,14 @@ def file_operations():
     
     # Ensure directory exists
     import os
-    os.makedirs("ML_Review/outputs/logs", exist_ok=True)
-    filename: str = "ML_Review/outputs/logs/test_note.txt"
+    # Dynamically determine the project root directory
+    # Path: src/basics/01_python_syntax.py -> src/basics -> src -> project_root
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(os.path.dirname(current_dir))
+    
+    log_dir = os.path.join(project_root, "outputs", "logs")
+    os.makedirs(log_dir, exist_ok=True)
+    filename: str = os.path.join(log_dir, "test_note.txt")
     
     # 写入文件
     print(f"正在写入文件: {filename} ...")
