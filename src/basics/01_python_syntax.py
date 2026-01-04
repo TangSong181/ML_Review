@@ -106,29 +106,79 @@ def functions_review():
 
     log_arguments(1, 2, "test", a=10, b="hi")
 
-# 4. 类与对象
+# 4. 类与对象 - 深入理解方法类型
 class Dog:
+    # 类变量 (相当于 Java 的 static String species = "犬科")
+    species: str = "犬科"
+
     # 构造函数
-    def __init__(self, name: str, breed: str):
+    def __init__(self, name: str, breed: str = "Unknown"):
         self.name: str = name
         self.breed: str = breed
         self.tricks: list[str] = [] # 实例变量
 
-    # 实例方法
+    # 1. 实例方法 (Instance Method)
+    # 必须有 self，通常用来访问对象的属性
     def bark(self) -> str:
-        return f"{self.name} 汪汪叫!"
+        return f"{self.name} 在汪汪叫！"
 
     def add_trick(self, trick: str) -> None:
         self.tricks.append(trick)
 
-def classes_review():
-    print_header("4. 类与对象")
+    # 2. 类方法 (Class Method)
+    # 必须有 cls，代表 Dog 类本身。
+    # 用途：不管你还没实例化对象，我都可以访问类的属性
+    @classmethod
+    def get_species(cls) -> str:
+        return f"所有的狗都属于: {cls.species}"
 
-    my_dog = Dog("Buddy", "Golden Retriever")
+    # 类方法常见用途：替代构造函数 (Factory Pattern)
+    @classmethod
+    def from_string(cls, dog_str: str):
+        # 假设输入格式为 "Name-Breed"
+        try:
+            name, breed = dog_str.split('-')
+            return cls(name, breed)
+        except ValueError:
+            print("输入格式错误，应为 'Name-Breed'")
+            return None
+
+    # 3. 静态方法 (Static Method)
+    # 不需要 self 也不需要 cls。
+    # 用途：这就是一个普通函数，只是跟狗有关，所以放在这里方便管理
+    @staticmethod
+    def is_food_safe(food: str) -> bool:
+        if food == "巧克力":
+            return False
+        return True
+
+def classes_review():
+    print_header("4. 类与对象 (方法类型详解)")
+
+    # 1. 调用实例方法 (必须先有对象)
+    print("--- 实例方法 ---")
+    my_dog = Dog("旺财", "中华田园犬")
     print(f"我的狗叫 {my_dog.name}, 品种是 {my_dog.breed}")
     print(my_dog.bark())
-    my_dog.add_trick("roll over")
+    my_dog.add_trick("握手")
     print(f"{my_dog.name} 会的把戏: {my_dog.tricks}")
+
+    # 2. 调用类方法 (不需要对象，直接用类名调用)
+    print("\n--- 类方法 ---")
+    print(Dog.get_species()) # 输出: 所有的狗都属于: 犬科
+    
+    # 使用类方法作为工厂函数
+    dog_str = "大黄-土狗"
+    dog2 = Dog.from_string(dog_str)
+    if dog2:
+        print(f"通过字符串 '{dog_str}' 创建的狗: {dog2.name}, 品种: {dog2.breed}")
+
+    # 3. 调用静态方法 (不需要对象，直接用类名调用)
+    print("\n--- 静态方法 ---")
+    foods = ["骨头", "巧克力"]
+    for food in foods:
+        safe = Dog.is_food_safe(food)
+        print(f"狗吃 '{food}' 安全吗? {'安全' if safe else '危险!'}")
 
 # --- 新增部分 ---
 
