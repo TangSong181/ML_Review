@@ -99,12 +99,25 @@ def functions_review():
     print(f"5 的平方: {power(5)}")
     print(f"2 的 3 次方: {power(2, 3)}")
 
-    # 可变参数 *args 和 **kwargs
-    def log_arguments(*args: int | str, **kwargs: int | str):
-        print(f"位置参数 (args): {args}")
-        print(f"关键字参数 (kwargs): {kwargs}")
+    # 3. 可变参数 (Variable Arguments)
+    # *args (位置可变参数): 收集所有剩余的位置参数，打包成一个 元组 (Tuple)
+    # **kwargs (关键字可变参数): 收集所有剩余的关键字参数，打包成一个 字典 (Dictionary)
+    def log_arguments(*args: int | str, **kwargs: int | str) -> None:
+        print(f"位置参数 (*args) -> 元组: {args}")
+        print(f"关键字参数 (**kwargs) -> 字典: {kwargs}")
 
+    # 调用示例
+    # 1, 2, "test" 会被收集到 args 中
+    # a=10, b="hi" 会被收集到 kwargs 中
     log_arguments(1, 2, "test", a=10, b="hi")
+
+    # 实际应用：参数转发 (Forwarding)
+    def wrapper(*args, **kwargs):
+        print("--- 包装器开始 ---")
+        log_arguments(*args, **kwargs) # 使用 * 和 ** 进行解包转发
+        print("--- 包装器结束 ---")
+    
+    wrapper("Alice", 25, role="Developer")
 
 # 4. 类与对象 - 深入理解方法类型
 class Dog:
